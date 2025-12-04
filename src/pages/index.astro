@@ -1,49 +1,130 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const formatDate = (date: Date) => {
+	return date.toISOString().split('T')[0];
+};
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<p class="tagline"><span class="prompt">$</span> {SITE_DESCRIPTION}</p>
+	
+	<section class="posts">
+		<h2 class="section-title"><span class="hash">#</span> RECENT POSTS</h2>
+		
+		{posts.length === 0 && <p class="empty">No posts yet.</p>}
+		
+		{posts.map((post) => (
+			<a href={`/blog/${post.id}`} class="post">
+				<div class="post-header">
+					<h3 class="title">{post.data.title}</h3>
+					<span class="date">{formatDate(post.data.pubDate)}</span>
+				</div>
+				<p class="description">{post.data.description}</p>
+				{post.data.tags && post.data.tags.length > 0 && (
+					<div class="tags">
+						{post.data.tags.map((tag) => (
+							<span class="tag">{tag}</span>
+						))}
+					</div>
+				)}
+			</a>
+		))}
+	</section>
+</BaseLayout>
+
+<style>
+	.tagline {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		margin-bottom: 3rem;
+	}
+
+	.prompt {
+		color: var(--accent-teal);
+	}
+
+	.section-title {
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--text-muted);
+		letter-spacing: 0.1em;
+		margin-bottom: 2rem;
+	}
+
+	.hash {
+		color: var(--accent-teal);
+	}
+
+	.posts {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.empty {
+		color: var(--text-muted);
+	}
+
+	.post {
+		display: block;
+		padding: 1.5rem 0;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.post:first-of-type {
+		border-top: 1px solid var(--border);
+	}
+
+	.post:hover .title {
+		color: var(--accent-teal);
+	}
+
+	.post-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.title {
+		font-size: 1rem;
+		font-weight: 500;
+		color: var(--text-primary);
+		margin: 0;
+		transition: color 0.2s ease;
+	}
+
+	.date {
+		font-size: 0.8rem;
+		color: var(--text-muted);
+		white-space: nowrap;
+	}
+
+	.description {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin: 0 0 0.75rem 0;
+		line-height: 1.5;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.tag {
+		font-size: 0.75rem;
+		color: var(--accent-teal);
+		background-color: var(--bg-tertiary);
+		padding: 0.25rem 0.6rem;
+		border-radius: 4px;
+	}
+</style>

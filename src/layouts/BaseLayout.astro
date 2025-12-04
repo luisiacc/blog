@@ -1,0 +1,57 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<a href="/" class="logo">{SITE_TITLE}</a>
+			</header>
+			<main>
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>
+
+<style>
+	.container {
+		max-width: 720px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	header {
+		margin-bottom: 3rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.logo {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		letter-spacing: -0.02em;
+	}
+
+	.logo:hover {
+		color: var(--accent-teal);
+	}
+
+	main {
+		min-height: calc(100vh - 200px);
+	}
+</style>
