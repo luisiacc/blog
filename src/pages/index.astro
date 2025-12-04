@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_AUTHOR, SITE_TAGLINE } from '../consts';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -13,6 +13,10 @@ const formatDate = (date: Date) => {
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<header class="hero">
+		<h1 class="author">{SITE_AUTHOR}</h1>
+		<p class="role">{SITE_TAGLINE}</p>
+	</header>
 	<p class="tagline"><span class="prompt">$</span> {SITE_DESCRIPTION}</p>
 
 	<section class="posts">
@@ -40,6 +44,23 @@ const formatDate = (date: Date) => {
 </BaseLayout>
 
 <style>
+	.hero {
+		margin-bottom: 1rem;
+	}
+
+	.author {
+		font-size: 1.75rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 0.25rem 0;
+	}
+
+	.role {
+		font-size: 1rem;
+		color: var(--accent-teal);
+		margin: 0;
+	}
+
 	.tagline {
 		font-size: 1rem;
 		color: var(--text-secondary);
