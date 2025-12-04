@@ -14,12 +14,12 @@ const formatDate = (date: Date) => {
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<p class="tagline"><span class="prompt">$</span> {SITE_DESCRIPTION}</p>
-	
+
 	<section class="posts">
 		<h2 class="section-title"><span class="hash">#</span> RECENT POSTS</h2>
-		
+
 		{posts.length === 0 && <p class="empty">No posts yet.</p>}
-		
+
 		{posts.map((post) => (
 			<a href={`/blog/${post.id}`} class="post">
 				<div class="post-header">
@@ -75,10 +75,11 @@ const formatDate = (date: Date) => {
 		display: block;
 		padding: 1.5rem 0;
 		border-bottom: 1px solid var(--border);
+		transition: border-color 0.2s ease;
 	}
 
-	.post:first-of-type {
-		border-top: 1px solid var(--border);
+	.post:hover {
+		border-bottom-color: var(--accent-teal);
 	}
 
 	.post:hover .title {
